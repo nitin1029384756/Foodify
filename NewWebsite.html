@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SnapCal - Analyze Your Food</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* From Uiverse.io by 0xnihilism */ 
+.button-text span:first-child {
+  font-size: 9px;
+  font-weight: 400; /* Regular weight for "Powered by" */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  
+}
+
+.button-text span:last-child {
+  font-size: 16px;
+  font-weight: 700; /* Bold for "GPT" */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.brutalist-button.openai {
+  font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+    sans-serif;
+  display: flex;
+  align-items: center;
+  width: 240px; /* Increased width slightly */
+  height: 70px;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: bold;
+  border: 3px solid #ffffff;
+  outline: 3px solid #1a1a1a;
+  box-shadow: 8px 8px 0 #10a37f;
+  transition: all 0.2s ease-out;
+  padding: 0 12px;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.brutalist-button.openai::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg at 50% 50%, #10a37f, #7ce9d6, #10a37f);
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+  z-index: 1;
+  animation: rotate 4s linear infinite;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.brutalist-button.openai:hover::before {
+  opacity: 0.15;
+}
+
+.brutalist-button.openai:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 12px 12px 0 #10a37f;
+}
+
+.brutalist-button.openai:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0 #10a37f;
+  background-color: #ffffff;
+  color: #1a1a1a;
+  border-color: #1a1a1a;
+}
+
+.openai-logo {
+  display: flex;
+  align-items: center;
+  margin-right: 12px;
+  position: relative;
+  z-index: 2;
+}
+
+.openai-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 8px;
+  transition: transform 0.2s ease-out;
+}
+
+.brutalist-button.openai:hover .openai-icon {
+  transform: rotate(-15deg) scale(1.1);
+}
+
+.brutalist-button.openai:active .openai-icon {
+  transform: rotate(15deg) scale(0.9);
+}
+
+.openai-text {
+  font-family: "Helvetica Neue", sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-shadow: 2px 2px 0 #1a1a1a;
+}
+
+.openai-logo {
+  display: flex;
+  align-items: center;
+  margin-right: 16px; /* Increased margin */
+  position: relative;
+  z-index: 2;
+}
+
+.openai-icon {
+  width: 28px; /* Slightly reduced size */
+  height: 28px;
+  margin-right: 8px;
+  transition: transform 0.2s ease-out;
+}
+
+.openai-text {
+  font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+    sans-serif;
+  font-size: 22px;
+  font-weight: 700; /* Bold */
+  letter-spacing: -0.5px; /* Slightly tighter letter spacing */
+  text-shadow: 2px 2px 0 #1a1a1a;
+}
+
+.button-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1; /* Reduced line height */
+  position: relative;
+  z-index: 2;
+}
+
+.button-text span:first-child {
+  font-size: 9px; /* Reduced size */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.button-text span:last-child {
+  font-size: 16px; /* Reduced size */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #f8f9fb;
+      color: #111;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: #22c55e;
+    }
+
+    nav a {
+      margin-left: 30px;
+      text-decoration: none;
+      color: #555;
+      font-weight: 500;
+    }
+
+    nav a:hover {
+      color: #22c55e;
+    }
+
+    .get-started {
+      margin-left: 40px;
+      background: #22c55e;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .get-started:hover {
+      background: #16a34a;
+    }
+
+    main {
+      text-align: center;
+      padding: 100px 20px 60px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1.2;
+      background: linear-gradient(to right, #22c55e, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      margin-top: 20px;
+      color: #666;
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .buttons {
+      margin-top: 30
+      x;
+    }
+
+    .buttons a {
+      display: inline-block;
+      margin: 10px;
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .try-now {
+      background: #22c55e;
+      color: white;
+    }
+
+    .try-now:hover {
+      background: #16a34a;
+    }
+
+    .learn-more {
+      border: 2px solid #ccc;
+      color: #333;
+      background: white;
+    }
+
+    .learn-more:hover {
+      border-color: #999;
+    }
+
+    /* Upload Section */
+    #upload {
+      background: white;
+      margin: 60px auto;
+      padding: 50px 20px;
+      border-radius: 16px;
+      max-width: 900px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    }
+
+    #upload h2 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      background: linear-gradient(to right, #22c55e, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .upload-box {
+      border: 2px dashed #ccc;
+      padding: 60px;
+      border-radius: 12px;
+      background: #f9fafb;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: 0.3s ease;
+    }
+
+    .upload-box:hover {
+      background: #f0fdf4;
+      border-color: #22c55e;
+    }
+
+    .upload-box .upload-icon {
+      font-size: 40px;
+      color: #bbb;
+      margin-bottom: 20px;
+    }
+
+    .upload-box h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #111;
+    }
+
+    .upload-box p {
+      color: #555;
+      margin: 10px 0 0;
+    }
+
+    .select-button {
+      margin-top: 20px;
+      background: #22c55e;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .select-button:hover {
+      background: #16a34a;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    footer {
+      margin-top: 60px;
+      padding: 30px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #999;
+    }
+    /* From Uiverse.io by marcelodolza */ 
+.button {
+  --white:rgb(255, 255, 255);
+  --bg: #080808;
+  --radius: 100px;
+  outline: none;
+  cursor: pointer;
+  border: 0;
+  position: relative;
+  border-radius: var(--radius);
+  background-color: var(--bg);
+  transition: all 0.2s ease;
+  box-shadow:
+    inset 0 0.3rem 0.9rem rgba(255, 255, 255, 0.3),
+    inset 0 -0.1rem 0.3rem rgba(0, 0, 0, 0.7),
+    inset 0 -0.4rem 0.9rem rgba(255, 255, 255, 0.5),
+    0 3rem 3rem rgba(0, 0, 0, 0.3),
+    0 1rem 1rem -0.6rem rgba(0, 0, 0, 0.8);
+}
+.button .wrap {
+    font-size: 18px; /* smaller text */
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 16px 28px; /* smaller padding */
+    border-radius: inherit;
+    position: relative;
+    overflow: hidden;
+  }
+  
+.button .wrap p span:nth-child(2) {
+  display: none;
+}
+.button:hover .wrap p span:nth-child(1) {
+  display: none;
+}
+.button:hover .wrap p span:nth-child(2) {
+  display: inline-block;
+}
+.button .wrap p {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  transition: all 0.2s ease;
+  transform: translateY(1%);
+  mask-image: linear-gradient(to bottom, white 40%, transparent);
+}
+.button .wrap::before,
+.button .wrap::after {
+  content: "";
+  position: absolute;
+  transition: all 0.3s ease;
+}
+.button .wrap::before {
+  left: -15%;
+  right: -15%;
+  bottom: 25%;
+  top: -120%;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.12);
+}
+.button .wrap::after {
+  left: 6%;
+  right: 6%;
+  top: 12%;
+  bottom: 40%;
+  border-radius: 22px 22px 0 0;
+  box-shadow: inset 0 10px 8px -10px rgba(255, 255, 255, 0.8);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(0, 0, 0, 0) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+.button:hover {
+  box-shadow:
+    inset 0 0.3rem 0.5rem rgba(255, 255, 255, 0.4),
+    inset 0 -0.1rem 0.3rem rgba(0, 0, 0, 0.7),
+    inset 0 -0.4rem 0.9rem rgba(255, 255, 255, 0.7),
+    0 3rem 3rem rgba(0, 0, 0, 0.3),
+    0 1rem 1rem -0.6rem rgba(0, 0, 0, 0.8);
+}
+.button:hover .wrap::before {
+  transform: translateY(-5%);
+}
+.button:hover .wrap::after {
+  opacity: 0.4;
+  transform: translateY(5%);
+}
+.button:hover .wrap p {
+  transform: translateY(-4%);
+}
+.button:active {
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 0.3rem 0.5rem rgba(255, 255, 255, 0.5),
+    inset 0 -0.1rem 0.3rem rgba(0, 0, 0, 0.8),
+    inset 0 -0.4rem 0.9rem rgba(255, 255, 255, 0.4),
+    0 3rem 3rem rgba(0, 0, 0, 0.3),
+    0 1rem 1rem -0.6rem rgba(0, 0, 0, 0.8);
+}
+
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">
+    📷 SnapCal
+  </div>
+  <nav>
+    <a href="#">Features</a>
+    <a href="#">How It Works</a>
+    <a href="#try">Try It Now</a>
+    <a class="get-started" href="#try">Get Started</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Snap Your Food, <br>Know Your Calories</h1>
+  <p>SnapCal uses AI to instantly analyze your food photos and provide accurate calorie information.</p>
+  <div class="buttons">
+    <a class="try-now" href="#try">Try It Now</a>
+    <a class="learn-more" href="#">Learn More</a>
+  </div>
+</main>
+
+<section id="try">
+  <div id="upload">
+    <h2>Try It Yourself</h2>
+    <form action="/analyze" method="post" enctype="multipart/form-data">
+      <label for="file-upload" class="upload-box">
+        <div class="upload-icon">⬆️</div>
+        <h3>Upload your food image</h3>
+        <p>Drag and drop your image here, or click to browse</p>
+        <input type="file" id="file-upload" name="file" onchange="this.form.submit()">
+        <!-- From Uiverse.io by marcelodolza --> 
+         <br>
+<button class="button" type="button" class="select-button" onclick="document.getElementById('file-upload').click()">
+    <div class="wrap">
+      <p>
+        <span>✧</span>
+        <span>✦</span>
+        Analyze!
+      </p>
+    </div>
+  </button>
+  
+      </label>
+    </form>
+  </div>
+</section>
+
+ 
+  
+<footer>
+  © 2025 SnapCal. Powered by OpenAI GPT-4 Turbo.
+</footer>
+
+</body>
+</html>
